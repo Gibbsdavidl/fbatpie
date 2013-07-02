@@ -72,7 +72,9 @@ class SingleTest:
         # pidx = [[0,2], ... ]
 
     def markerSet(self):
-        if len(self.markers) < 3 and self.markers[0] != '0':
+        if len(self.markers) == 1:
+            self.markers = ['0', self.markers[0]]
+        elif len(self.markers) < 3 and self.markers[0] != '0':
             self.markers = ['0', self.markers[0], self.markers[1]]
         if len(self.markers) > 2:
             self.markerCount[0] = self.gs.count(self.markers[0])
