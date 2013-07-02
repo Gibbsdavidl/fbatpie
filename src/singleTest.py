@@ -36,13 +36,15 @@ class SingleTest:
     """ performs a single test"""
     useidx = [] # an index of the samples that pass validation
       
-    def __init__(self, marker, gs, ys, famidx, childidx, paridx):
+    def __init__(self, marker, gs, ys, famidx, childidx, paridx, silent, freqcutoff):
         """ any initial tasks """		      
         self.gs = gs # the genotypes for this marker
         self.ts = ys # the phenotypes for this marker, adjusted for offset == T_ij
         self.famidx = famidx # the index into families.
         self.childidx = childidx # index of children within families
         self.paridx = paridx
+        self.silent = silent # do we print the mendelian errors?
+        self.freqcutoff = freqcutoff
         self.markers = list(set(gs))
         self.markers.sort() # markers will go [0,1,2] or [0,A,B] etc.
         self.thismarker = marker
@@ -91,7 +93,8 @@ class SingleTest:
                     ((cg[0] == pg2[0] or cg[0] == pg2[1]) and 
                     (cg[1] == pg1[0] or cg[1] == pg1[1]))):
                     # not valid!
-                    sys.stderr.write("warning: family: " + str(i) + " has a mendelian error")
+                    if self.silent == True:
+                        sys.stderr.write("warning: family: " + str(i) + " has a mendelian error")
                     cg[0] = '0' # zero it out
                     cg[1] = '0'
 
@@ -165,9 +168,9 @@ class SingleTest:
     def test(self, printit):
         """ perform the single marker fbat test """
         self.markerSet()
-        if len(self.markers) > 2:
-            self.validate()
-            self.computeAlleleFreq()
+        self.validate()
+        self.computeAlleleFreq()
+        if len(self.markers) > 2 and self.allelefreq > self.freqcutoff:
             self.computeS()
             self.computeEofXandV()
             self.computeUandV()

@@ -41,6 +41,7 @@ class FBAT:
         """ any initial tasks """
         self.tfamfile = ""
         self.tpedfile = ""
+        self.freqcutoff = 0
         self.tfam = []   # list of the family info, first six columns of ped
         self.tped = []   # list of the snps .. each individual has two alleles [A11, A21, A12, A22, A13, A23, ...]
         self.X = []      # the X matrix
@@ -58,9 +59,8 @@ class FBAT:
         """ load the data here """
         self.tpedfile=tped_file
         self.tfamfile=tfam_file
-        tped = open(tped_file,'r')
+        self.tped = open(tped_file,'r')
         tfam = open(tfam_file,'r').read().strip().split("\n")
-        self.markers = map(lambda x: x[1], tped)
         self.tfam = map(lambda x: x.split("\t"), tfam)
         if len(self.tfam[1]) != 6:
             print("Error: tfam has wrong number of columns")
@@ -80,6 +80,9 @@ class FBAT:
             print("check around family: ",
                   str([i for i in range(len(gap)) if gap[i] != 3]))
             sys.exit(0)
+
+    def setFreqCutoff(self, f):
+        self.freqcutoff = float(f)
 
     def setOffset(self, o):
         self.offset = o
@@ -138,14 +141,13 @@ class FBAT:
     def single(self):
         """ perform the single marker test """
         print("Marker\tAllele\tafreq\tNfams\tS-E(S)\tVar(S)\tZ\tP")
-        for thisg in tped:
+        for thisg in self.tped:
             gs = thisg.strip().split("\t")
-            gs = map(lambda x: x[4:], gs)
-            for i in range(len(self.markers)):  # do a test for each marker
-                s = singleTest.SingleTest(self.markers[i], gs,
-                                          self.phenotypes, self.famidx,
-                                          self.childidx, self.paridx)
-                s.test(True)
+            marker = gs[1]
+            s = singleTest.SingleTest(marker, gs[4:], self.phenotypes,
+                                      self.famidx, self.childidx, self.paridx,
+                                      False, self.freqcutoff)
+            s.test(True)
 
     def rare(self, regionfile, freqfile, weighted):
         """ reads the region file and performs rare variant tests """
@@ -166,9 +168,7 @@ class FBAT:
         print("#FBAT")
         print("#files: " + self.tfamfile + "  " + self.tpedfile)
         print("#Number of families: " + str(len(self.famidx)))
-        print("#Number of alleles: " + str(len(self.tped[1])))
         print("#Offset: " + str(self.offset))
-        print("#Number of Markers: " + str(len(self.markers)))
         
     def printResults(self):
         """ print the results to a tab separated table """
