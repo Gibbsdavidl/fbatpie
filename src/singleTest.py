@@ -241,6 +241,7 @@ class FbatProb:
         self.exp[ str([2,2,1,1])] = 1
         self.exp[ str([1,2,1,2])] = 1
         self.exp[ str([1,2,2,1])] = 1
+        self.exp[ str([2,1,1,2])] = 1
         self.exp[ str([2,1,2,1])] = 1
         self.exp[ str([1,2,2,2])] = 1.5
         self.exp[ str([2,1,2,2])] = 1.5
@@ -258,8 +259,8 @@ class FbatProb:
         self.var[ str([1,2,1,1])] = 0.5
         self.var[ str([1,1,2,2])] = 1.0 
         self.var[ str([2,2,1,1])] = 1.0 
-        self.var[ str([1,2,2,1])] = 1.0 
-        self.var[ str([2,1,1,2])] = 1.0 
+        self.var[ str([1,2,2,1])] = 1.5 
+        self.var[ str([2,1,1,2])] = 1.5 
         self.var[ str([1,2,1,2])] = 1.5   
         self.var[ str([2,1,2,1])] = 1.5
         self.var[ str([1,2,2,2])] = 2.5
