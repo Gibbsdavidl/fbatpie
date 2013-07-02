@@ -1,6 +1,7 @@
 
 import sys
 import math
+from scipy import stats
 
 # FBAT - ISB implementation.
 # david l gibbs
@@ -161,9 +162,10 @@ class SingleTest:
         self.famN = len(filter(lambda x: x != 0, self.U))                      # number of families with non-zero Us
         
         
-    def computePvalue(self, Z):
+    def computePvalue(self):
         """ compute either pvalues using either ChiSq or Z """
-        return(1)
+        x = stats.norm()
+        self.pvalue = x.pdf(self.Z)
              
     def test(self, printit):
         """ perform the single marker fbat test """
@@ -178,6 +180,7 @@ class SingleTest:
                 self.Z = 0
             else:
                 self.Z = sum(self.U) / math.sqrt(sum(self.V) + 0.0000001)
+            self.computePvalue()
             if(printit == True):
                 self.printTest()
 
@@ -185,8 +188,7 @@ class SingleTest:
         childT = map(lambda x,y: x+y[0], self.famidx, self.childidx)
         print(self.thismarker + "\t" + str(self.markers) + "\t" + str(self.markerCount) + "\t" 
               + str(self.allelefreq) + "\t" + str(self.famN) + "\t"
-              + str(sum(self.U)) + '0' + "\t" + str(sum(self.V)) + "\t" +  str(self.Z) + "\t" + str(self.pvalue) + "\t" 
-              + str(self.qvalue))
+              + str(sum(self.U)) + '0' + "\t" + str(sum(self.V)) + "\t" +  str(self.Z) + "\t" + str(self.pvalue))
         #print("T:    " + str([self.ts[i] for i in map(lambda x,y: x+y[0], self.famidx, self.childidx)]))
         #print("X:    " + str(self.X))
         #print("EofX: " + str(self.EofX))
