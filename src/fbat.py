@@ -58,11 +58,9 @@ class FBAT:
         """ load the data here """
         self.tpedfile=tped_file
         self.tfamfile=tfam_file
-        tped = open(tped_file,'r').read().strip().split("\n")
+        tped = open(tped_file,'r')
         tfam = open(tfam_file,'r').read().strip().split("\n")
-        tped = map(lambda x: x.split("\t"), tped)
         self.markers = map(lambda x: x[1], tped)
-        self.tped = map(lambda x: x[4:], tped)
         self.tfam = map(lambda x: x.split("\t"), tfam)
         if len(self.tfam[1]) != 6:
             print("Error: tfam has wrong number of columns")
@@ -140,11 +138,14 @@ class FBAT:
     def single(self):
         """ perform the single marker test """
         print("Marker\tAllele\tafreq\tNfams\tS-E(S)\tVar(S)\tZ\tP")
-        for i in range(len(self.markers)):  # do a test for each marker
-            s = singleTest.SingleTest(self.markers[i], self.tped[i],
-                           self.phenotypes, self.famidx,
-                           self.childidx, self.paridx)
-            s.test(True)
+        for thisg in tped:
+            gs = thisg.strip().split("\t")
+            gs = map(lambda x: x[4:], gs)
+            for i in range(len(self.markers)):  # do a test for each marker
+                s = singleTest.SingleTest(self.markers[i], gs,
+                                          self.phenotypes, self.famidx,
+                                          self.childidx, self.paridx)
+                s.test(True)
 
     def rare(self, regionfile, freqfile, weighted):
         """ reads the region file and performs rare variant tests """
