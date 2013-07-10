@@ -171,8 +171,10 @@ class RareTest:
         self.Z = sum(self.W) / sqrt(self.VarW)
 
     def computePvalues(self):
-        x = stats.norm()
-        self.pvalue = x.pdf(self.Z)
+        """ compute either pvalues using either ChiSq or Z """
+        ''' Z: abs(Z), lower.tail, *2 for two sided test.'''
+        f = stats.norm()
+        self.pvalue = (1-f.cdf(abs(self.Z))) * 2
 
     def printTest(self):
         #for i in range(len(self.Um)):

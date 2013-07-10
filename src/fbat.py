@@ -71,6 +71,9 @@ class FBAT:
         self.checkForTrios()
         self.printFBAT()
 
+    def loadIndex (self, index_file):
+        
+
     def checkForTrios(self):
         gap = []
         for i in range(len(self.famidx)-1):
@@ -154,13 +157,18 @@ class FBAT:
         print("Region\tW\tVarW\tZ\tpvalue\tallele_freqs\tweights")
         regions = open(regionfile,'r').read().strip().split("\n")
         regions = map(lambda x: x.strip(), regions)
-        freqs = open(freqfile,'r').read().strip().split("\n")
+        if freqfile != "none":
+            freqs = open(freqfile,'r').read().strip().split("\n")
         for r in regions:
-            theseMarkers = r.split("\t")[1:]
-            markeridx = [self.markers.index(i) for i in theseMarkers]
             regionname = r.split("\t")[0]
-            t = rareTest.RareTest(regionname, theseMarkers, freqs, [self.tped[j] for j in markeridx],
-                                  self.phenotypes, self.famidx, self.childidx, self.paridx, weighted)
+            theseMarkers = r.split("\t")[1:]
+            # find them in the index ...
+            # then make the list of data using the file offsets .. call it thisData
+            # get the allele freqs from the freqfile ... if requested.
+            #    the freq file needs to be 
+            t = rareTest.RareTest(regionname, theseMarkers, freqs, thisData,
+                                  self.phenotypes, self.famidx, self.childidx,
+                                  self.paridx, weighted)
             t.test()
             
     def printFBAT(self):
