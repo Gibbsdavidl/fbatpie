@@ -166,8 +166,9 @@ class SingleTest:
         
     def computePvalue(self):
         """ compute either pvalues using either ChiSq or Z """
-        x = stats.norm()
-        self.pvalue = x.pdf(self.Z)
+        ''' Z: abs(Z), lower.tail, *2 for two sided test.'''
+        f = stats.norm()
+        self.pvalue = (1-f.cdf(abs(self.Z))) * 2
              
     def test(self, printit):
         """ perform the single marker fbat test """

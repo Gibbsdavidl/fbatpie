@@ -1,6 +1,12 @@
+#from src import fbat
+#f = fbat.FBAT()
+#f.load("data/smallset/test.tfam", "data/smallset/test.tped")
+#f.setOffset(0.5)
+#f.single()
+
 from src import fbat
 f = fbat.FBAT()
-f.load("data/largeset/camp.fam", "data/largeset/camp.tped")
+f.load("data/largeset/camp.tfam", "data/largeset/camp.tped")
 f.setOffset(0)
 f.single()
 
