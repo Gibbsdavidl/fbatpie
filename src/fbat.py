@@ -33,6 +33,7 @@ import sys
 import math
 import singleTest
 import rareTest
+import numpy as np
 
 class FBAT:
     """ the fbat test object """
@@ -41,6 +42,7 @@ class FBAT:
         """ any initial tasks """
         self.tfamfile = ""
         self.tpedfile = ""
+        self.tpedindex    = ""
         self.freqcutoff = 0
         self.tfam = []   # list of the family info, first six columns of ped
         self.tped = []   # list of the snps .. each individual has two alleles [A11, A21, A12, A22, A13, A23, ...]
@@ -69,10 +71,25 @@ class FBAT:
         self.phenotypes = self.adjPhenotypes(self.pedPhenotypes)
         self.famidx, self.childidx, self.paridx = self.familyIndex(self.tfam)
         self.checkForTrios()
-        self.printFBAT()
 
     def loadIndex (self, index_file):
+        # this file indexes the current tped #
+        self.tpedindex = np.load(self.tpedfile+".npy")
         
+    def writeIndex(self):
+        # if there's no index file then we should write one
+        finped = open(self.tpedfile, 'r')
+        ped_line_offset = []
+        ped_line_name = []
+        offset = 0
+        for line in finped:
+            txt = line[0:128].split("\t")
+            ped_line_name.append("chr"+txt[0]+":"+txt[3])
+            ped_line_offset.append(offset)
+            offset += len(line)
+        finped.close()
+        idx = np.array([ped_line_name, ped_line_offset])
+        np.save(self.tpedfile+".npy", idx)
 
     def checkForTrios(self):
         gap = []
@@ -143,34 +160,58 @@ class FBAT:
 
     def single(self):
         """ perform the single marker test """
-        print("Marker\tAllele\tafreq\tNfams\tS-E(S)\tVar(S)\tZ\tP")
+        self.printFBAT()
+        print("Chr\tMarker\tAllele\tAlleleCounts\tafreq\tNfams\tS-E(S)\tVar(S)\tZ\tP")
         for thisg in self.tped:
             gs = thisg.strip().split("\t")
             marker = gs[1]
-            s = singleTest.SingleTest(marker, gs[4:], self.phenotypes,
+            chrm = gs[0]
+            s = singleTest.SingleTest(marker, chrm, gs[4:], self.phenotypes,
                                       self.famidx, self.childidx, self.paridx,
                                       False, self.freqcutoff)
             s.test(True)
 
-    def rare(self, regionfile, freqfile, weighted):
+    def buildDataSet(self, jdx):
+        # this takes the jdx index to a tped, and builds a list of those vars
+        # the index tells us where to seek #
+        thisData = []
+        chrms = []
+        fin = open(self.tpedfile,'r')
+        for j in jdx:
+            fin.seek(int(j))
+            l = fin.readline().strip().split("\t")
+            chrms.append(l[0])
+            thisData.append(l[4:])
+        return(thisData, chrms)
+            
+    def rare(self, regionfile, indexfile, freqfile, weighted):
         """ reads the region file and performs rare variant tests """
-        print("Region\tW\tVarW\tZ\tpvalue\tallele_freqs\tweights")
-        regions = open(regionfile,'r').read().strip().split("\n")
-        regions = map(lambda x: x.strip(), regions)
+        self.printFBAT()
+        if indexfile == "none":
+            self.writeIndex()
+            indexfile = self.tpedfile + ".npy"
+        self.loadIndex(indexfile)
         if freqfile != "none":
             freqs = open(freqfile,'r').read().strip().split("\n")
+        else:
+            freqs = []
+        print("Chr\tRegion\tW\tVarW\tZ\tpvalue\tallele_freqs\tweights")
+        regions = open(regionfile,'r').read().strip().split("\n")
+        regions = map(lambda x: x.strip(), regions)
         for r in regions:
             regionname = r.split("\t")[0]
             theseMarkers = r.split("\t")[1:]
             # find them in the index ...
+            idx = [i for i in range(len(self.tpedindex[0])) if self.tpedindex[0][i] in theseMarkers]
+            jdx = self.tpedindex[1][idx]
             # then make the list of data using the file offsets .. call it thisData
-            # get the allele freqs from the freqfile ... if requested.
-            #    the freq file needs to be 
-            t = rareTest.RareTest(regionname, theseMarkers, freqs, thisData,
-                                  self.phenotypes, self.famidx, self.childidx,
-                                  self.paridx, weighted)
-            t.test()
-            
+            thisData, chrms = self.buildDataSet(jdx)
+            if len(jdx) > 0:
+                t = rareTest.RareTest(regionname, theseMarkers, chrms, freqs, thisData,
+                                      self.phenotypes, self.famidx, self.childidx,
+                                      self.paridx, weighted)
+                t.test()
+
     def printFBAT(self):
         """ print a little statement about the object """
         print("#FBAT")

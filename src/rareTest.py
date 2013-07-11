@@ -39,11 +39,12 @@ from singleTest import SingleTest
 
 class RareTest:
     """ performs a single test"""
-    def __init__(self, region, markers, freqs, listofgs, ys, famidx, childidx, paridx, weighted):
+    def __init__(self, region, markers, chrms, freqs, listofgs, ys, famidx, childidx, paridx, weighted):
         """ any initial tasks """
         self.region = region # the name of this region
         self.gs = listofgs # for each marker .. the set of genotypes
         self.ys = ys # the phenotypes for this marker, adjusted for offset == T_ij
+        self.chrms = chrms
         self.famidx = famidx # the index into families.
         self.childidx = childidx # index of children within families
         self.paridx = paridx
@@ -101,16 +102,18 @@ class RareTest:
                     w.append(0)
             self.weights = w
         else:
-            self.weights = [1 for i in range(len(self.markers))]
+            self.weights = [1 for i in range(len(self.Um))]
 
     def computeSingleStats(self):
         """ a list of single tests """
-        self.Um = [SingleTest(self.markers[i], self.gs[i],
+        self.Um = [SingleTest(self.markers[i], self.chrms[i], self.gs[i],
                               self.ys, self.famidx, self.childidx,
-                              self.paridx) for i in range(len(self.gs))]
+                              self.paridx, False, 0.0) for i in range(len(self.gs))]
         for i in range(len(self.Um)):
             self.Um[i].test(False)
             self.markerfreq.append(self.Um[i].allelefreq)
+        self.Um = [x for x in self.Um if x.U != -1] # remove any that are empty
+        self.M = len(self.Um)
         
     def computeW(self):
         """ the rare test statistic """
@@ -132,7 +135,7 @@ class RareTest:
         self.Ve = np.array([0 for i in range(pow(self.M,2))], dtype='f').reshape(self.M, self.M)
         cidx = map(lambda x,y: x+y[0], self.Um[0].famidx, self.Um[0].childidx)
         for p in range(self.M):
-            for q in range(self.M): # for each pair of markers
+            for q in range(self.M): # for each pair of markers #
                 e = 0
                 wp = self.weights[p]
                 wq = self.weights[q]
@@ -179,7 +182,7 @@ class RareTest:
     def printTest(self):
         #for i in range(len(self.Um)):
         #    self.Um[i].printTest()
-        print(self.region + "\t" + str(sum(self.W)) + "\t"
+        print(self.chrms[0] + "\t" + self.region + "\t" + str(sum(self.W)) + "\t"
               + str(self.VarW) + "\t" + str(self.Z)
               + "\t" +  str(self.pvalue) + "\t" +
               str(self.markerfreq) + "\t" + str(self.weights))
@@ -194,7 +197,8 @@ class RareTest:
 
     def test(self):
         """ perform the single marker fbat test """
-        self.buildFreqDict()
+        if self.freqs != []:
+            self.buildFreqDict()
         self.computeSingleStats()
         self.computeWeights()
         self.computeW()

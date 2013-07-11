@@ -37,7 +37,7 @@ class SingleTest:
     """ performs a single test"""
     useidx = [] # an index of the samples that pass validation
       
-    def __init__(self, marker, gs, ys, famidx, childidx, paridx, silent, freqcutoff):
+    def __init__(self, marker, chrm, gs, ys, famidx, childidx, paridx, silent, freqcutoff):
         """ any initial tasks """		      
         self.gs = gs # the genotypes for this marker
         self.ts = ys # the phenotypes for this marker, adjusted for offset == T_ij
@@ -46,6 +46,7 @@ class SingleTest:
         self.paridx = paridx
         self.silent = silent # do we print the mendelian errors?
         self.freqcutoff = freqcutoff
+        self.chrm = chrm
         self.markers = list(set(gs))
         self.markers.sort() # markers will go [0,1,2] or [0,A,B] etc.
         self.thismarker = marker
@@ -186,10 +187,15 @@ class SingleTest:
             self.computePvalue()
             if(printit == True):
                 self.printTest()
+        else:
+            self.E = -1
+            self.V = -1
+            self.U = -1
+            self.famN = -1
 
     def printTest(self):
         childT = map(lambda x,y: x+y[0], self.famidx, self.childidx)
-        print(self.thismarker + "\t" + str(self.markers) + "\t" + str(self.markerCount) + "\t" 
+        print(self.chrm + "\t" + self.thismarker + "\t" + str(self.markers) + "\t" + str(self.markerCount) + "\t" 
               + str(self.allelefreq) + "\t" + str(self.famN) + "\t"
               + str(sum(self.U)) + '0' + "\t" + str(sum(self.V)) + "\t" +  str(self.Z) + "\t" + str(self.pvalue))
         #print("T:    " + str([self.ts[i] for i in map(lambda x,y: x+y[0], self.famidx, self.childidx)]))
