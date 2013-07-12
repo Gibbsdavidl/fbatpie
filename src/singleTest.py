@@ -176,22 +176,22 @@ class SingleTest:
         self.markerSet()
         self.validate()
         self.computeAlleleFreq()
-        if len(self.markers) > 2 and self.allelefreq > self.freqcutoff:
-            self.computeS()
-            self.computeEofXandV()
-            self.computeUandV()
+        self.computeS()
+        self.computeEofXandV()
+        self.computeUandV()
+        if len(self.markers) > 2 and self.allelefreq > self.freqcutoff and sum(self.V) > 0:
             if sum(self.V) == 0 or sum(self.U) == 0:
                 self.Z = 0
             else:
                 self.Z = sum(self.U) / math.sqrt(sum(self.V) + 0.0000001)
             self.computePvalue()
-            if(printit == True):
-                self.printTest()
         else:
             self.E = -1
             self.V = -1
             self.U = -1
             self.famN = -1
+        if(printit == True and self.E != -1):
+            self.printTest()
 
     def printTest(self):
         childT = map(lambda x,y: x+y[0], self.famidx, self.childidx)

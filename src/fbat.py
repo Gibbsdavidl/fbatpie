@@ -84,7 +84,8 @@ class FBAT:
         offset = 0
         for line in finped:
             txt = line[0:128].split("\t")
-            ped_line_name.append("chr"+txt[0]+":"+txt[3])
+            #ped_line_name.append("chr"+txt[0]+":"+txt[3])
+            ped_line_name.append(txt[1])
             ped_line_offset.append(offset)
             offset += len(line)
         finped.close()
@@ -180,6 +181,8 @@ class FBAT:
         for j in jdx:
             fin.seek(int(j))
             l = fin.readline().strip().split("\t")
+            if l[1] == "chr7:100680629":
+                print(l[0:10])
             chrms.append(l[0])
             thisData.append(l[4:])
         return(thisData, chrms)
@@ -195,7 +198,7 @@ class FBAT:
             freqs = open(freqfile,'r').read().strip().split("\n")
         else:
             freqs = []
-        print("Chr\tRegion\tW\tVarW\tZ\tpvalue\tallele_freqs\tweights")
+        print("Chr\tRegion\tW\tVarW\tZ\tpvalue\talleles_used\tweights")
         regions = open(regionfile,'r').read().strip().split("\n")
         regions = map(lambda x: x.strip(), regions)
         for r in regions:
