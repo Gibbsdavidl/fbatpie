@@ -61,8 +61,14 @@ class FBAT:
         """ load the data here """
         self.tpedfile=tped_file
         self.tfamfile=tfam_file
-        self.tped = open(tped_file,'r')
-        tfam = open(tfam_file,'r').read().strip().split("\n")
+        if '.gz' in tped_file:
+            self.tped = gzip.open(tped_file,'r')
+        else:
+            self.tped = open(tped_file,'r')
+        if '.gz' in tfam_file:
+            tfam = gzip.open(tfam_file,'r').read().strip().split("\n")
+        else:
+            tfam = open(tfam_file,'r').read().strip().split("\n")
         self.tfam = map(lambda x: x.split("\t"), tfam)
         if len(self.tfam[1]) != 6:
             print("Error: tfam has wrong number of columns")
