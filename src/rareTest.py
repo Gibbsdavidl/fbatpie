@@ -213,13 +213,14 @@ class RareTest:
         if self.freqs != []:
             self.buildFreqDict()
         self.computeSingleStats()
-        self.computeWeights()
-        self.computeW()
-        self.computeD()
-        self.computeVe()
-        self.computeVa()
-        self.computeVarW()
-        self.computeZ()
-        self.computePvalues()
-        self.printTest()
+        if len(self.Um) > 1:
+            self.computeWeights()
+            self.computeW()
+            self.computeD()
+            self.computeVe()
+            self.computeVa()
+            self.computeVarW()
+            self.computeZ()
+            self.computePvalues()
+            self.printTest()
             

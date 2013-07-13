@@ -202,18 +202,21 @@ class FBAT:
         regions = open(regionfile,'r').read().strip().split("\n")
         regions = map(lambda x: x.strip(), regions)
         for r in regions:
-            regionname = r.split("\t")[0]
-            theseMarkers = r.split("\t")[1:]
-            # find them in the index ...
-            idx = [i for i in range(len(self.tpedindex[0])) if self.tpedindex[0][i] in theseMarkers]
-            jdx = self.tpedindex[1][idx]
-            # then make the list of data using the file offsets .. call it thisData
-            thisData, chrms = self.buildDataSet(jdx)
-            if len(jdx) > 0:
-                t = rareTest.RareTest(regionname, theseMarkers, chrms, freqs, thisData,
-                                      self.phenotypes, self.famidx, self.childidx,
-                                      self.paridx, weighted)
-                t.test()
+            try:
+                regionname = r.split("\t")[0]
+                theseMarkers = r.split("\t")[1:]
+                # find them in the index ...
+                idx = [i for i in range(len(self.tpedindex[0])) if self.tpedindex[0][i] in theseMarkers]
+                jdx = self.tpedindex[1][idx]
+                # then make the list of data using the file offsets .. call it thisData
+                thisData, chrms = self.buildDataSet(jdx)
+                if len(jdx) > 0:
+                    t = rareTest.RareTest(regionname, theseMarkers, chrms, freqs, thisData,
+                                          self.phenotypes, self.famidx, self.childidx,
+                                          self.paridx, weighted)
+                    t.test()
+            except:
+                pass
 
     def printFBAT(self):
         """ print a little statement about the object """
