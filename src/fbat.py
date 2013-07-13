@@ -34,6 +34,7 @@ import math
 import singleTest
 import rareTest
 import numpy as np
+import gzip
 
 class FBAT:
     """ the fbat test object """
