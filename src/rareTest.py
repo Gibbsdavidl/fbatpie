@@ -100,10 +100,8 @@ class RareTest:
                 ni = len(self.ys)
                 q = (mu+1.0)/(2.0*nu+2.0)
                 # what if mu and nu are 0?
-                w.append(sqrt(ni*q*(1-q)))
+                w.append(1/(sqrt(ni*q*(1-q))))
             self.weights = map(lambda x: x/sum(w), w)
-            for i in range(len(self.weights)):
-                print(self.markers[i] + "\t" + str(self.weights[i]) + "\t" + str(w[i]))
         elif self.weighted == "kaviar": # here we assume the data has been filtered
             w = []                      # so that only markers used are in Kaviar
             for m in self.markers:      # for each marker

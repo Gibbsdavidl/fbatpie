@@ -30,6 +30,8 @@ def main(argv):
             regionfile = arg
         elif opt in ("--indexfile"):
             indexfile = arg
+        elif opt in ("--weights"):
+            weights = arg
     if tfamfile == '' or tpedfile == '':
         print 'runSingle.py --tped <tped file> --tfam <tfam file>  --offset x --weights [madsen,kaviar,none]'
         sys.exit()

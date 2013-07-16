@@ -34,6 +34,7 @@ import math
 import singleTest
 import rareTest
 import numpy as np
+import gzip
 
 class FBAT:
     """ the fbat test object """
@@ -221,6 +222,11 @@ class FBAT:
                                           self.phenotypes, self.famidx, self.childidx,
                                           self.paridx, weighted)
                     t.test()
+            except KeyboardInterrupt:
+                sys.exit(0)
+            except IOError:
+                print("file io error")
+                sys.exit(0)
             except:
                 pass
 

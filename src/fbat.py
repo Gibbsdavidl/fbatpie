@@ -188,8 +188,6 @@ class FBAT:
         for j in jdx:
             fin.seek(int(j))
             l = fin.readline().strip().split("\t")
-            if l[1] == "chr7:100680629":
-                print(l[0:10])
             chrms.append(l[0])
             thisData.append(l[4:])
         return(thisData, chrms)
@@ -222,6 +220,11 @@ class FBAT:
                                           self.phenotypes, self.famidx, self.childidx,
                                           self.paridx, weighted)
                     t.test()
+            except KeyboardInterrupt:
+                sys.exit(0)
+            except IOError:
+                print("file io error")
+                sys.exit(0)
             except:
                 pass
 
