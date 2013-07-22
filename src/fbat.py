@@ -85,7 +85,7 @@ class FBAT:
         
     def writeIndex(self):
         # if there's no index file then we should write one
-        finped = open(self.tpedfile, 'r')
+        finped = gzip.open(self.tpedfile, 'r')
         ped_line_offset = []
         ped_line_name = []
         offset = 0
@@ -195,7 +195,7 @@ class FBAT:
     def rare(self, regionfile, indexfile, freqfile, weighted):
         """ reads the region file and performs rare variant tests """
         self.printFBAT()
-        if indexfile == "none":
+        if indexfile == "none" or indexfile == '':
             self.writeIndex()
             indexfile = self.tpedfile + ".npy"
         self.loadIndex(indexfile)

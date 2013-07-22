@@ -11,6 +11,7 @@ def main(argv):
     weights="madsen"  # the weighting scheme name
     freqfile='none'   # the file of allele freqs with two columns markername [tab] freq
     regionfile=''     # lists of transcripts and the markers associated with them
+    indexfile = ''
     try:
         opts, args = getopt.getopt(argv,"h",["tped=","tfam=","offset=","weights=","regionfile=","freqfile=", "indexfile="])
     except getopt.GetoptError:
@@ -18,7 +19,7 @@ def main(argv):
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print 'runSingle.py --tped <tped file> --tfam <tfam file> --offset x --weights [data,kaviar,none]'
+            print 'runSingle.py --tped <tped file> --tfam <tfam file> --offset x --weights [data,kaviar,none] --regionfile r'
             sys.exit()
         elif opt in ("--tped"):
             tpedfile = arg
@@ -33,7 +34,7 @@ def main(argv):
         elif opt in ("--weights"):
             weights = arg
     if tfamfile == '' or tpedfile == '':
-        print 'runSingle.py --tped <tped file> --tfam <tfam file>  --offset x --weights [madsen,kaviar,none]'
+        print 'runSingle.py --tped <tped file> --tfam <tfam file>  --offset x --weights [madsen,kaviar,none] --regionfile r'
         sys.exit()
             
     f = fbat.FBAT()

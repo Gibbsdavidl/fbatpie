@@ -188,8 +188,6 @@ class FBAT:
         for j in jdx:
             fin.seek(int(j))
             l = fin.readline().strip().split("\t")
-            if l[1] == "chr7:100680629":
-                print(l[0:10])
             chrms.append(l[0])
             thisData.append(l[4:])
         return(thisData, chrms)
@@ -197,7 +195,7 @@ class FBAT:
     def rare(self, regionfile, indexfile, freqfile, weighted):
         """ reads the region file and performs rare variant tests """
         self.printFBAT()
-        if indexfile == "none":
+        if indexfile == "none" or indexfile == '':
             self.writeIndex()
             indexfile = self.tpedfile + ".npy"
         self.loadIndex(indexfile)
