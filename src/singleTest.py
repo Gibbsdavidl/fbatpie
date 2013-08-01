@@ -37,7 +37,7 @@ class SingleTest:
     """ performs a single test"""
     useidx = [] # an index of the samples that pass validation
       
-    def __init__(self, marker, chrm, gs, ys, famidx, childidx, paridx, silent, freqcutoff):
+    def __init__(self, marker, chrm, gs, ys, famidx, childidx, paridx, silent, freqcutoff, verbose):
         """ any initial tasks """		      
         self.gs = gs # the genotypes for this marker
         self.ts = ys # the phenotypes for this marker, adjusted for offset == T_ij
@@ -45,6 +45,7 @@ class SingleTest:
         self.childidx = childidx # index of children within families
         self.paridx = paridx
         self.silent = silent # do we print the mendelian errors?
+        self.verbose = verbose
         self.freqcutoff = freqcutoff
         self.chrm = chrm
         self.markers = list(set(gs))
@@ -198,11 +199,16 @@ class SingleTest:
         print(self.chrm + "\t" + self.thismarker + "\t" + str(self.markers) + "\t" + str(self.markerCount) + "\t" 
               + str(self.allelefreq) + "\t" + str(self.famN) + "\t"
               + str(sum(self.U)) + '0' + "\t" + str(sum(self.V)) + "\t" +  str(self.Z) + "\t" + str(self.pvalue))
-        #print("T:    " + str([self.ts[i] for i in map(lambda x,y: x+y[0], self.famidx, self.childidx)]))
-        #print("X:    " + str(self.X))
-        #print("EofX: " + str(self.EofX))
-        #print("V:    " + str(self.V))
-        #print()
+        if self.verbose == True:
+            print("T:\t" + "\t".join(str([self.ts[i] for i in map(lambda x,y: x+y[0], self.famidx, self.childidx)])))
+            print("X:\t" + "\t".join(str(self.X)))
+            print("S:\t" + "\t".join(str(self.S)))    
+            print("EofX:\t" + "\t".join(str(self.EofX)))
+            print("E:\t" + "\t".join(str(self.E)))
+            print("VofX:\t" + "\t".join(str(self.VofX)))
+            print("V:    " + "\t".join(str(self.V)))
+            print("U:    " + "\t".join(str(self.U)))
+            
         
 class FbatProb:
     """

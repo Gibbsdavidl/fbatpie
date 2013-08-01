@@ -44,6 +44,7 @@ class FBAT:
         self.tfamfile = ""
         self.tpedfile = ""
         self.tpedindex    = ""
+        self.verbose = "not"
         self.freqcutoff = 0
         self.tfam = []   # list of the family info, first six columns of ped
         self.tped = []   # list of the snps .. each individual has two alleles [A11, A21, A12, A22, A13, A23, ...]
@@ -116,6 +117,9 @@ class FBAT:
         self.offset = o
         self.applyOffset()
 
+    def setVerbose(self, v):
+        self.verbose=v
+
     def adjPhenotypes(self,p):
         # fbat takes ped format: 2 == affected, 1 == unaffected
         # and codes them as 1 and 0 respectively.
@@ -176,7 +180,7 @@ class FBAT:
             chrm = gs[0]
             s = singleTest.SingleTest(marker, chrm, gs[4:], self.phenotypes,
                                       self.famidx, self.childidx, self.paridx,
-                                      False, self.freqcutoff)
+                                      False, self.freqcutoff, self.verbose)
             s.test(True)
 
     def buildDataSet(self, jdx):
