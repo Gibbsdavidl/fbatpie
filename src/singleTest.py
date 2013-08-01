@@ -199,7 +199,7 @@ class SingleTest:
         print(self.chrm + "\t" + self.thismarker + "\t" + str(self.markers) + "\t" + str(self.markerCount) + "\t" 
               + str(self.allelefreq) + "\t" + str(self.famN) + "\t"
               + str(sum(self.U)) + '0' + "\t" + str(sum(self.V)) + "\t" +  str(self.Z) + "\t" + str(self.pvalue))
-        if self.verbose == True:
+        if self.verbose == "verbose":
             print("T:\t" + "\t".join(str([self.ts[i] for i in map(lambda x,y: x+y[0], self.famidx, self.childidx)])))
             print("X:\t" + "\t".join(str(self.X)))
             print("S:\t" + "\t".join(str(self.S)))    

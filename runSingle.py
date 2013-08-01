@@ -11,7 +11,7 @@ def main(argv):
     freq=0
     verbose="not"
     try:
-        opts, args = getopt.getopt(argv,"h",["tped=","tfam=","offset=","freq="])
+        opts, args = getopt.getopt(argv,"h",["tped=","tfam=","offset=","freq=", "verbose="])
     except getopt.GetoptError:
         print 'runSingle.py --tped <tped file> --tfam <tfam file> --offset <o> --freq <cutoff> --verbose v'
         sys.exit(2)
@@ -27,6 +27,8 @@ def main(argv):
             offset = arg
         elif opt in ("--freq"):
             freq = arg
+        elif opt in ("--verbose"):
+            verbose = arg
     if tfamfile == '' or tpedfile == '':
         print 'runSingle.py --tped <tped file> --tfam <tfam file> --offset o --freq f --verbose v'
         sys.exit()
