@@ -200,14 +200,14 @@ class SingleTest:
               + str(self.allelefreq) + "\t" + str(self.famN) + "\t"
               + str(sum(self.U)) + '0' + "\t" + str(sum(self.V)) + "\t" +  str(self.Z) + "\t" + str(self.pvalue))
         if self.verbose == "verbose":
-            print("T:\t" + "\t".join(str([self.ts[i] for i in map(lambda x,y: x+y[0], self.famidx, self.childidx)])))
-            print("X:\t" + "\t".join(str(self.X)))
-            print("S:\t" + "\t".join(str(self.S)))    
-            print("EofX:\t" + "\t".join(str(self.EofX)))
-            print("E:\t" + "\t".join(str(self.E)))
-            print("VofX:\t" + "\t".join(str(self.VofX)))
-            print("V:    " + "\t".join(str(self.V)))
-            print("U:    " + "\t".join(str(self.U)))
+            print("T:\t" + "\t".join([str(self.ts[i]) for i in map(lambda x,y: x+y[0], self.famidx, self.childidx)]))
+            print("X:\t" + "\t".join([str(a) for a in self.X]))
+            print("S:\t" + "\t".join([str(a) for a in self.S])) 
+            print("EofX:\t" + "\t".join([str(a) for a in self.EofX]))
+            print("E:\t" + "\t".join([str(a) for a in self.E]))
+            print("VofX:\t" + "\t".join([str(a) for a in self.VofX]))
+            print("V:    " + "\t".join([str(a) for a in self.V]))
+            print("U:    " + "\t".join([str(a) for a in self.U]))
             
         
 class FbatProb:
